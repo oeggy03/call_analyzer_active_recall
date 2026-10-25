@@ -15,21 +15,25 @@ logs, documentation, or request examples.
 `SUPABASE_URL` may be configured as a non-secret environment variable. If it
 is omitted, the service uses its built-in hosted project URL.
 
-## Scheduled delivery
+## Current deployment
 
-Create a Cloud Scheduler job with:
+GCP project `call-analyzer-512714`, region `asia-southeast1`.
 
-- Cron: `0 9 * * *`
-- Timezone: `Asia/Singapore`
-- Method: `POST`
-- URI: `<CLOUD_RUN_SERVICE_URL>/daily`
-- Authentication: OIDC using a service account authorized to invoke the
-  Cloud Run service
+- Cloud Run service `active-recall`. URL
+  `https://active-recall-ac32aneera-as.a.run.app`. Minimum instances 0,
+  maximum instances 1, unauthenticated access disabled. Runtime service
+  account `active-recall-runner@call-analyzer-512714.iam.gserviceaccount.com`.
+- Cloud Scheduler job `daily-vocabulary`. Cron `0 9 * * *`, timezone
+  `Asia/Singapore`, `POST /daily` on that URL. OIDC service account
+  `active-recall-invoker@call-analyzer-512714.iam.gserviceaccount.com`.
+- Telegram bot `@ca_chinese_active_recall_bot`.
 
-The Cloud Run service should remain private, with no unauthenticated access.
-Use region `asia-southeast1`, maximum instances `1`, and no minimum instances.
+Do not create a second service or schedule for the morning message. Change
+the existing job when the time or target changes. A manual check is
+`gcloud scheduler jobs run daily-vocabulary --location=asia-southeast1`.
 
 ## Health check
 
-`GET <CLOUD_RUN_SERVICE_URL>/health` returns `ok`. It does not read Secret
-Manager values or call Supabase or Telegram.
+`GET /health` returns `ok` and does not read secrets or call Supabase or
+Telegram. The deployed service rejects unauthenticated calls, so a check from
+outside GCP needs an identity token.

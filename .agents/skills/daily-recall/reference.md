@@ -41,6 +41,15 @@ required for `/daily`. The bot token is used in the Telegram
 `GET /health` returns `ok` without reading any of these values or contacting
 another service.
 
+## Deployment
+
+The running names are GCP project `call-analyzer-512714`, region
+`asia-southeast1`, Cloud Run service `active-recall`, and Scheduler job
+`daily-vocabulary`. Secret Manager holds `supabase-secret`,
+`telegram-bot-token`, and `telegram-chat-id`. The bot username is
+`@ca_chinese_active_recall_bot`. The service URL and account emails are in
+`docs/operations.md`. Do not copy secret values into this repository.
+
 ## Future scope
 
 Quiz replies are intentionally not implemented yet. A future change may add

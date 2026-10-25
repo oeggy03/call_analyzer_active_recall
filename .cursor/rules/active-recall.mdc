@@ -5,7 +5,12 @@ alwaysApply: true
 
 Follow `AGENTS.md` and `docs/operations.md`.
 
-This repository owns only the active-recall HTTP service. Do not edit the
-desktop SQLite schema or the lesson-db migrations. Never commit secrets,
-tokens, chat IDs, passwords, or password-bearing connection strings. Keep
-verification offline and never call Telegram or Supabase from tests.
+This repository owns only the active-recall HTTP service. Cloud Run service
+`active-recall` and Scheduler job `daily-vocabulary` are already deployed in
+GCP project `call-analyzer-512714`. Do not create a second copy.
+
+Do not edit the desktop SQLite schema or the lesson-db migrations. The
+service reads confirmed vocabulary and does not write reviews yet. Never
+commit secrets, tokens, chat IDs, passwords, or password-bearing connection
+strings. Keep verification offline and never call Telegram or Supabase from
+tests.

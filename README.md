@@ -12,8 +12,9 @@ The repositories have separate responsibilities:
 - This repository owns the active-recall service and its scheduled Telegram
   delivery.
 
-The scheduled delivery is at 9:00 every morning in the `Asia/Singapore`
-timezone. The service exposes:
+The morning message is already scheduled. Cloud Scheduler job
+`daily-vocabulary` calls `POST /daily` at 9:00 `Asia/Singapore`. The service
+exposes:
 
 - `GET /health` — returns `ok` without reading secrets or contacting another
   service.
@@ -21,15 +22,11 @@ timezone. The service exposes:
 
 ## Cloud Run deployment
 
-The intended Cloud Run settings are:
-
-- Region: `asia-southeast1`
-- Unauthenticated access: disabled
-- Maximum instances: `1`
-- Minimum instances: `0`
-
-Cloud Scheduler should call `POST /daily` with OIDC authentication. See
-[`docs/operations.md`](docs/operations.md) for the schedule and secret names.
+The running service is `active-recall` in GCP project
+`call-analyzer-512714`, region `asia-southeast1`. Unauthenticated access is
+disabled, the maximum instances are 1, and the minimum is 0. See
+[`docs/operations.md`](docs/operations.md) for the URL, the scheduler job, and
+the service accounts.
 
 The macOS desktop app's Supabase key must not be reused here. This service uses
 its own `SUPABASE_SECRET_KEY`, supplied through Secret Manager in production.

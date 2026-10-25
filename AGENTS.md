@@ -4,14 +4,31 @@ This repository is the active-recall service for the Mandarin lesson ecosystem.
 
 ## Ownership
 
-- `call_analyzer` is the macOS desktop app and owns its local SQLite database.
-- `call-analyzer-lesson-db` owns the hosted Supabase Postgres migrations.
+- `../call_analyzer` is the macOS desktop app. It owns SQLite and the sync
+  goroutine. It pushes confirmed vocabulary and pulls it on launch.
+- `../call-analyzer-lesson-db` owns the hosted Postgres migrations. Project
+  ref `zoiwsytnyrdifggwleru` already has
+  `20261025103511_initial_schema.sql` applied.
 - This repository owns only the recall HTTP service and its Telegram delivery.
 
-Do not edit the desktop SQLite schema or the `call-analyzer-lesson-db`
-migrations from this repository. The service reads confirmed vocabulary rows
-from Supabase and does not write `study_state` yet. Quiz replies are a later
-change in this repository.
+Do not edit the desktop SQLite schema or the lesson-db migrations from here.
+The service reads confirmed vocabulary and does not write `study_state` or
+`review_events`. Quiz replies are a later change in this repository.
+
+## What is deployed
+
+GCP project `call-analyzer-512714`, region `asia-southeast1`:
+
+- Cloud Run service `active-recall`, minimum instances 0, maximum 1, no
+  public invoker.
+- Cloud Scheduler job `daily-vocabulary`, cron `0 9 * * *`, timezone
+  `Asia/Singapore`, `POST /daily` with OIDC.
+- Secret Manager names `supabase-secret`, `telegram-bot-token`, and
+  `telegram-chat-id`. The Telegram bot is `@ca_chinese_active_recall_bot`.
+
+The service URL and secret values are operational details. Read
+`docs/operations.md` for the URL and the service-account names. Never copy
+those secret values into git, and never reuse the desktop Mac key.
 
 ## Security and verification
 
