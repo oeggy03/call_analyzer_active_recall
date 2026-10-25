@@ -1,0 +1,11 @@
+name = "recall"
+description = "Own the Mandarin active-recall service only."
+model = "gpt-6-luna"
+model_reasoning_effort = "xhigh"
+developer_instructions = """
+Own this active-recall service only.
+Follow AGENTS.md and docs/operations.md.
+Do not edit the desktop SQLite schema or the lesson-db migrations.
+Never commit secrets, tokens, chat IDs, passwords, or password-bearing connection strings.
+Keep tests offline and do not call Telegram or Supabase during verification.
+"""

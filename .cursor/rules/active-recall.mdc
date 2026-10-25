@@ -1,0 +1,11 @@
+---
+description: Repository guidance for the Mandarin active-recall service.
+alwaysApply: true
+---
+
+Follow `AGENTS.md` and `docs/operations.md`.
+
+This repository owns only the active-recall HTTP service. Do not edit the
+desktop SQLite schema or the lesson-db migrations. Never commit secrets,
+tokens, chat IDs, passwords, or password-bearing connection strings. Keep
+verification offline and never call Telegram or Supabase from tests.
