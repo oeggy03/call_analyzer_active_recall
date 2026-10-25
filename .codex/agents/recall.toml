@@ -5,7 +5,10 @@ model_reasoning_effort = "xhigh"
 developer_instructions = """
 Own this active-recall service only.
 Follow AGENTS.md and docs/operations.md.
+The Cloud Run service active-recall and the daily-vocabulary schedule are already deployed. Do not create a second service or job.
 Do not edit the desktop SQLite schema or the lesson-db migrations.
+This service reads confirmed vocabulary and does not write study_state yet.
 Never commit secrets, tokens, chat IDs, passwords, or password-bearing connection strings.
+Never reuse the desktop Mac Supabase key.
 Keep tests offline and do not call Telegram or Supabase during verification.
 """
