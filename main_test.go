@@ -180,9 +180,29 @@ func TestFormatDailyMessageOmitsMatchingTraditional(t *testing.T) {
 		Senses:      []Sense{{Gloss: "hello", SortOrder: 0}},
 	}})
 
-	want := "Today's words\n\n1. 你好\nni3 hao3\nhello"
+	want := "Today's words\n\n1. 你好\nnǐ hǎo\nhello"
 	if message != want {
 		t.Fatalf("unexpected message")
+	}
+}
+
+func TestFormatDailyMessageRendersToneMarks(t *testing.T) {
+	message := formatDailyMessage([]VocabularyEntry{
+		{
+			Simplified: "黑五",
+			Reading:    "hei1 wu3",
+			Senses:     []Sense{{Gloss: "Black Friday. After it, Q1 traffic growth is manageable.", SortOrder: 0}},
+		},
+		{
+			Simplified: "利用率",
+			Reading:    "li4 yong4 lü4",
+			Senses:     []Sense{{Gloss: "utilization. IES 中台's lot is about 381 cards.", SortOrder: 0}},
+		},
+	})
+
+	want := "Today's words\n\n1. 黑五\nhēi wǔ\nBlack Friday. After it, Q1 traffic growth is manageable.\n\n2. 利用率\nlì yòng lǜ\nutilization. IES 中台's lot is about 381 cards."
+	if message != want {
+		t.Fatalf("unexpected message:\n%s", message)
 	}
 }
 

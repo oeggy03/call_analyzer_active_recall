@@ -73,7 +73,7 @@ func formatDailyMessage(entries []VocabularyEntry) string {
 			fmt.Fprintf(&message, "（%s）", traditional)
 		}
 		message.WriteByte('\n')
-		message.WriteString(entry.Reading)
+		message.WriteString(markedPinyin(entry.Reading))
 		message.WriteByte('\n')
 		message.WriteString(entry.Meaning())
 		if index < len(entries)-1 {
