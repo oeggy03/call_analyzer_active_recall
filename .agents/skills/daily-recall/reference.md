@@ -46,7 +46,8 @@ another service.
 
 The running names are GCP project `call-analyzer-512714`, region
 `asia-southeast1`, Cloud Run service `active-recall`, and Scheduler job
-`daily-vocabulary`. Secret Manager holds `supabase-secret`,
+`daily-vocabulary`. Pushes to `main` deploy that existing service through
+`.github/workflows/deploy.yml`. Secret Manager holds `supabase-secret`,
 `telegram-bot-token`, and `telegram-chat-id`. The bot username is
 `@ca_chinese_active_recall_bot`. The service URL and account emails are in
 `docs/operations.md`. Do not copy secret values into this repository.

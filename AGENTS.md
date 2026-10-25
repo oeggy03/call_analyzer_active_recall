@@ -23,6 +23,8 @@ GCP project `call-analyzer-512714`, region `asia-southeast1`:
   public invoker.
 - Cloud Scheduler job `daily-vocabulary`, cron `0 9 * * *`, timezone
   `Asia/Singapore`, `POST /daily` with OIDC.
+- GitHub Actions workflow `.github/workflows/deploy.yml` deploys
+  `active-recall` on push to `main`. Do not add another deploy workflow.
 - Secret Manager names `supabase-secret`, `telegram-bot-token`, and
   `telegram-chat-id`. The Telegram bot is `@ca_chinese_active_recall_bot`.
 

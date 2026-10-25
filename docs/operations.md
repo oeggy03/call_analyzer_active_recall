@@ -32,6 +32,26 @@ Do not create a second service or schedule for the morning message. Change
 the existing job when the time or target changes. A manual check is
 `gcloud scheduler jobs run daily-vocabulary --location=asia-southeast1`.
 
+## Deploying changes
+
+A push to `main`, including a merged pull request, runs
+[`.github/workflows/deploy.yml`](../.github/workflows/deploy.yml). The
+workflow runs the offline tests, pushes an image to Artifact Registry
+repository `active-recall` in `asia-southeast1`, and deploys a new revision
+of Cloud Run service `active-recall`. It does not create a service or change
+`daily-vocabulary`.
+
+GitHub authenticates with Workload Identity Federation. The provider accepts
+tokens only for `oeggy03/call_analyzer_active_recall` on `refs/heads/main`,
+and those tokens impersonate
+`github-active-recall-deployer@call-analyzer-512714.iam.gserviceaccount.com`.
+That account can update Cloud Run and push images. It cannot read Secret
+Manager or change who may invoke the service.
+
+The deploy keeps the existing secret bindings, `SUPABASE_URL`, and runtime
+service account `active-recall-runner`. It sets minimum instances to 0 and
+maximum instances to 1. Do not pass `--allow-unauthenticated`.
+
 ## Health check
 
 `GET /health` returns `ok` and does not read secrets or call Supabase or

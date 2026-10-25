@@ -1,0 +1,70 @@
+name: Test and deploy
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+      - name: Check formatting
+        run: test -z "$(gofmt -l .)"
+      - name: Test
+        run: go test ./...
+      - name: Vet
+        run: go vet ./...
+
+  deploy:
+    needs: test
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    concurrency:
+      group: active-recall-production
+      cancel-in-progress: false
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+
+      # Workload Identity Federation. The provider only accepts tokens for
+      # this repository on refs/heads/main. No service-account key is stored.
+      - uses: google-github-actions/auth@v3
+        with:
+          project_id: call-analyzer-512714
+          workload_identity_provider: projects/789350285690/locations/global/workloadIdentityPools/github/providers/github
+          service_account: github-active-recall-deployer@call-analyzer-512714.iam.gserviceaccount.com
+
+      - uses: google-github-actions/setup-gcloud@v2
+
+      - name: Build and push image
+        run: |
+          gcloud auth configure-docker asia-southeast1-docker.pkg.dev --quiet
+          image="asia-southeast1-docker.pkg.dev/call-analyzer-512714/active-recall/active-recall:${GITHUB_SHA}"
+          docker build --platform linux/amd64 --tag "${image}" .
+          docker push "${image}"
+          echo "IMAGE=${image}" >> "${GITHUB_ENV}"
+
+      # Update the existing active-recall service only. Omit env and secret
+      # flags so the current Secret Manager bindings stay in place. Omit
+      # --allow-unauthenticated so the invoker policy is left unchanged.
+      - name: Deploy Cloud Run
+        run: |
+          gcloud run deploy active-recall \
+            --project=call-analyzer-512714 \
+            --region=asia-southeast1 \
+            --image="${IMAGE}" \
+            --service-account=active-recall-runner@call-analyzer-512714.iam.gserviceaccount.com \
+            --min-instances=0 \
+            --max-instances=1 \
+            --quiet

@@ -24,7 +24,8 @@ exposes:
 
 The running service is `active-recall` in GCP project
 `call-analyzer-512714`, region `asia-southeast1`. Unauthenticated access is
-disabled, the maximum instances are 1, and the minimum is 0. See
+disabled, the maximum instances are 1, and the minimum is 0. A merge to
+`main` deploys a new revision through GitHub Actions. See
 [`docs/operations.md`](docs/operations.md) for the URL, the scheduler job, and
 the service accounts.
 
