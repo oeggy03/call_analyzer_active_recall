@@ -18,13 +18,14 @@ errors redact the secret.
 2. Shuffle the copy with the selector's injected `math/rand/v2` `*rand.Rand`.
 3. Keep the first ten entries, or all entries when fewer than ten exist.
 4. Use the sense with the lowest `sort_order` as the meaning.
-5. Send plain text with no Telegram parse mode:
+5. Render the reading with tone marks in the Telegram text. Numbered pinyin such as `hei1 wu3` or `lü4` is sent as `hēi wǔ` and `lǜ`. Tone 5 is written with no mark. Glosses are left unchanged.
+6. Send plain text with no Telegram parse mode:
 
 ```text
 Today's words
 
 1. 简体（繁體）
-reading
+hēi wǔ
 meaning
 ```
 
